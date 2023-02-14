@@ -1,11 +1,12 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
-from .models import Post
+from .models import Post, Group
 
 # Create your views here.
 
 
 def index(request):
+    template = 'posts/index.html'
     # Одна строка вместо тысячи слов на SQL:
     # в переменную posts будет сохранена выборка из 10 объектов модели Post,
     # отсортированных по полю pub_date по убыванию (от больших значений к меньшим)
@@ -14,15 +15,17 @@ def index(request):
     context = {
         'posts': posts,
     }
-    return render(request, 'posts/index.html', context)
+    return render(request, template, context)
 
 
 def group_posts(request, slug):
+    group = get_object_or_404(Group, slug=slug)
+    posts = group.posts.select_related('author')[:10]
     template = 'posts/group_list.html'
-    title = 'Лев Толстой – зеркало русской революции.'
     context = {
-        'slug': slug,
-        'title': title,
-        'text': 'Здесь будет информация о группах проекта Yatube'
+        'group': group,
+        'posts': posts,
+        'text': 'Здесь будет информация о группах проекта Yatube',
+        'title': group.title,
     }
     return render(request, template, context)
