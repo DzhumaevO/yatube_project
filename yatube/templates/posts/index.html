@@ -2,9 +2,7 @@
 {% block content %}
 <div class="conteiner">
   <h1>
-  {% block title %}
-  Последние обновления на сайте
-  {% endblock %}
+    {{title}}
   </h1>
   {% for post in posts %}
     <ul>
@@ -17,7 +15,9 @@
     </ul>
     <p>{{ post.text }}</p>
     {% if post.group %}
-      <a href="{% url 'posts:groups' post.group.slug %}">Все записи группы</a>
+      <a href="{% url 'posts:group_list' post.group.slug %}">
+        Все записи группы
+      </a>
     {% endif %}
     {% if not forloop.last %}
       <hr>
